@@ -49,6 +49,15 @@ app.patch('/api/v1/tours/:id', (req, res) => {
   });
 });
 
+app.delete('/api/v1/tours/:id', (req, res) => {
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tours,
+    },
+  });
+});
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
