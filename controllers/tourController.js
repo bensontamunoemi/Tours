@@ -20,6 +20,20 @@ const checkID =
     next();
   });
 
+// middleware that checks if name or price is not provided
+const checkBody = (req, res, next) => {
+  const { name, price } = req.body;
+
+  if (!name || !price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing name or price',
+    });
+  }
+
+  next();
+};
+
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -68,4 +82,12 @@ const deleteTour = (req, res) => {
   });
 };
 
-export { getAllTours, getTour, createTour, updateTour, deleteTour, checkID };
+export {
+  getAllTours,
+  getTour,
+  createTour,
+  updateTour,
+  deleteTour,
+  checkID,
+  checkBody,
+};
