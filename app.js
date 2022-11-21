@@ -1,9 +1,9 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
 import morgan from 'morgan';
 
-const __dirname = path.resolve();
+// routes
+import tourRouter from './routes/tourRoutes.js';
+import userRouter from './routes/userRoutes.js';
 
 const app = express();
 // MIDDLEWARE
@@ -15,105 +15,10 @@ app.use((req, res, next) => {
   next();
 });
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
-);
-
 // ROUTES
-const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestedAt,
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-};
 
-const getTour = (req, res) => {
-  const id = req.params.id * 1;
+// ROUTE HANDLERS
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
-  const tour = tours.find((el) => el.id === id);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-};
-
-const createTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-  });
-};
-
-const updateTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour: '<Updated tour here>',
-    },
-  });
-};
-
-const deleteTour = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tours,
-    },
-  });
-};
-
-const getAllUsers = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not defined yet' });
-};
-
-const createUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not defined yet' });
-};
-
-const getUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not defined yet' });
-};
-
-const updateUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not defined yet' });
-};
-
-const deleteUser = (req, res) => {
-  res
-    .status(500)
-    .json({ status: 'error', message: 'This route is not defined yet' });
-};
-
-app.route('/api/v1/tours').get(getAllTours).post(createTour);
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
-
-app.route('/api/v1/users').get(getAllUsers).post(createUser);
-app
-  .route('/api/v1/users/:id')
-  .get(getUser)
-  .patch(updateUser)
-  .delete(deleteUser);
-
-const port = process.env.PORT || 3000;
-
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
-});
+export default app;

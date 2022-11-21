@@ -1,6 +1,7 @@
-const dotenv = require('dotenv');
-const mongoose = require('mongoose');
-const fs = require('fs');
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import fs from 'fs';
+
 const Tour = require('../../model/tourModel');
 
 dotenv.config({ path: './config.env' });
@@ -8,7 +9,7 @@ dotenv.config({ path: './config.env' });
 mongoose
   .connect(process.env.DATABASE_LOCAL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => console.log('DB Connection Successful!'));
 
