@@ -9,7 +9,18 @@ const __dirname = path.resolve();
 
 const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find({});
+    // Build the query
+    const objectQuery = { ...req.query };
+    const excludedFields = ['page', 'limit', 'sort', 'fields'];
+    excludedFields.forEach((el) => {
+      delete objectQuery[el];
+    });
+
+    const query = Tour.find(objectQuery).lean().exec();
+    // Execute the query
+    const tours = await query;
+
+    // Send response to client
     res.status(200).json({
       status: 'success',
       requestedAt: req.requestedAt,
