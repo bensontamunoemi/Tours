@@ -1,16 +1,18 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import fs from 'fs';
+import Tour from '../../models/tourModel.js';
 
-const Tour = require('../../model/tourModel');
+const __filename = fileURLToPath(import.meta.url);
+
+const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: './config.env' });
 
 mongoose
-  .connect(process.env.DATABASE_LOCAL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.DATABASE_LOCAL)
   .then(() => console.log('DB Connection Successful!'));
 
 const tours = JSON.parse(
