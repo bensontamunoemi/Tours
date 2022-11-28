@@ -7,6 +7,13 @@ const __dirname = path.resolve();
 //   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 // );
 
+const aliasTopTours = async (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = 'price,-ratingsAverage';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 const getAllTours = async (req, res) => {
   try {
     // Build the query
@@ -148,4 +155,11 @@ const deleteTour = async (req, res) => {
   }
 };
 
-export { getAllTours, getTour, createTour, updateTour, deleteTour };
+export {
+  getAllTours,
+  getTour,
+  createTour,
+  updateTour,
+  deleteTour,
+  aliasTopTours,
+};
