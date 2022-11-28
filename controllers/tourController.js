@@ -1,5 +1,6 @@
 import path from 'path';
 import Tour from '../models/tourModel.js';
+import APIFeatures from '../utils/ApiFeatures.js';
 
 const __dirname = path.resolve();
 
@@ -7,32 +8,24 @@ const __dirname = path.resolve();
 //   fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
 // );
 
+const aliasTopTours = async (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = 'price,-ratingsAverage';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 const getAllTours = async (req, res) => {
   try {
-    // Build the query
-    // 1.) Filtering
-    const objectQuery = { ...req.query };
-    const excludedFields = ['page', 'limit', 'sort', 'fields'];
-    excludedFields.forEach((el) => {
-      delete objectQuery[el];
-    });
-
-    // 1.) Advanced Filtering
-    let queryStr = JSON.stringify(objectQuery);
-
-    queryStr = queryStr.replace(/\b(gte|gt|lt|lte)\b/g, (match) => `$${match}`); // finds gte, gt, le, lte and adds $ to them
-    // gte, gt, le, lte  for mongoDb to add the dollar sign $ so mongoDb can recognize the operator when received from the req.query
-
-    console.log('Hello', JSON.parse(queryStr));
-
-    /** @type {*}
-     *  @private                            \|/ the below shows the greater than operator how it is passed as a query
-     * 127.0.0.1:3000/api/v1/tours?duration[gte]=5&difficulty=easy&page=2&limit=5
-     */
-
-    const query = Tour.find(JSON.parse(queryStr)).lean().exec();
     // Execute the query
-    const tours = await query;
+    const features = new APIFeatures(Tour.find(), req.query)
+
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    const tours = await features.query;
 
     // Send response to client
     res.status(200).json({
@@ -120,4 +113,11 @@ const deleteTour = async (req, res) => {
   }
 };
 
-export { getAllTours, getTour, createTour, updateTour, deleteTour };
+export {
+  getAllTours,
+  getTour,
+  createTour,
+  updateTour,
+  deleteTour,
+  aliasTopTours,
+};
